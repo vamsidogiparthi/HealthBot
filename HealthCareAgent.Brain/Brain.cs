@@ -1,6 +1,3 @@
 ﻿namespace HealthCareAgent.Brain;
 
-public class Class1
-{
-
-}
+public class Brain { }

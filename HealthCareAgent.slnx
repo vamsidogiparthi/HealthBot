@@ -1,4 +1,5 @@
 <Solution>
   <Project Path="HealthCareAgent.Brain/HealthCareAgent.Brain.csproj" />
+  <Project Path="HealthCareAgent.DataLayer/HealthCareAgent.DataLayer.csproj" />
   <Project Path="HealthCareAgent.WebAPI/HealthCareAgent.WebAPI.csproj" />
 </Solution>
