@@ -30,5 +30,6 @@ public class Brain([FromKeyedServices("ChatBotKernel")] Kernel kernel, ILogger<B
             chatHistory,
             openAIPromptExecutionSettings
         );
+        Console.WriteLine();
     }
 }
