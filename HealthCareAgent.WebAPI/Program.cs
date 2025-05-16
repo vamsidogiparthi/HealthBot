@@ -11,6 +11,7 @@ var configuration = new ConfigurationBuilder()
     .Build();
 
 builder.Services.AddOpenApi();
+builder.Services.AddControllers();
 builder.Services.AddLogging(p =>
     p.AddConsole().AddConfiguration(builder.Configuration.GetSection("Logging"))
 );
@@ -49,7 +50,7 @@ builder.Services.AddSingleton<IChatCompletionService>(sp =>
 });
 
 builder.Services.AddKeyedTransient(
-    "IAUIKKernel",
+    "ChatBotKernel",
     (sp, key) =>
     {
         KernelPluginCollection kernelFunctions = [];
@@ -66,4 +67,7 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
 }
 
+app.UseRouting();
+app.UseWebSockets();
+app.MapControllers();
 app.UseHttpsRedirection();

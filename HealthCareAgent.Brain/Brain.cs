@@ -1,3 +1,27 @@
-﻿namespace HealthCareAgent.Brain;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using Microsoft.SemanticKernel.ChatCompletion;
+using Microsoft.SemanticKernel.Connectors.OpenAI;
 
-public class Brain { }
+namespace HealthCareAgent.Brain;
+
+public interface IBrain
+{
+    Task RunAsync();
+}
+
+public class Brain([FromKeyedServices("ChatBotKernel")] Kernel kernel, ILogger<Brain> logger)
+    : IBrain
+{
+    private readonly Kernel _kernel = kernel;
+    private readonly ILogger<Brain> _logger = logger;
+
+    public async Task RunAsync()
+    {
+        var ChatCompletionService = _kernel.GetRequiredService<IChatCompletionService>();
+        OpenAIPromptExecutionSettings openAIPromptExecutionSettings = new()
+        {
+            FunctionChoiceBehavior = FunctionChoiceBehavior.Auto(),
+        };
+    }
+}
