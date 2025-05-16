@@ -18,10 +18,16 @@ public class Brain([FromKeyedServices("ChatBotKernel")] Kernel kernel, ILogger<B
 
     public async Task RunAsync()
     {
-        var ChatCompletionService = _kernel.GetRequiredService<IChatCompletionService>();
+        var chatCompletionService = _kernel.GetRequiredService<IChatCompletionService>();
         OpenAIPromptExecutionSettings openAIPromptExecutionSettings = new()
         {
             FunctionChoiceBehavior = FunctionChoiceBehavior.Auto(),
         };
+
+        var chatHistory = new ChatHistory();
+        var chatMessage = await chatCompletionService.GetChatMessageContentAsync(
+            chatHistory,
+            openAIPromptExecutionSettings
+        );
     }
 }
