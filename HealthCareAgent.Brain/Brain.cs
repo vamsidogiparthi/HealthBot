@@ -18,6 +18,7 @@ public class Brain([FromKeyedServices("ChatBotKernel")] Kernel kernel, ILogger<B
 
     public async Task RunAsync()
     {
+        _logger.LogInformation("Initiating the chat process");
         var chatCompletionService = _kernel.GetRequiredService<IChatCompletionService>();
         OpenAIPromptExecutionSettings openAIPromptExecutionSettings = new()
         {
