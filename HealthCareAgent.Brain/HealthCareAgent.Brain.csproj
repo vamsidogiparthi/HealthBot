@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.SemanticKernel" Version="1.50.0" />
+    <PackageReference Include="Microsoft.SemanticKernel.Plugins.Web" Version="1.50.0-alpha" />
     <PackageReference Include="Microsoft.SemanticKernel.PromptTemplates.Handlebars" Version="1.50.0" />
     <PackageReference Include="Microsoft.SemanticKernel.Yaml" Version="1.50.0" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="9.0.5" />
