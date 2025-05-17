@@ -35,7 +35,7 @@ public class ChatHistoryDataService : IChatHistoryDataService
             up => up.UserChatConnectId,
             userConnectionId
         );
-        return await _userChatHistory.Find(filter).FirstOrDefaultAsync();
+        return await _userChatHistory.Find(filter).FirstOrDefaultAsync() ?? new();
     }
 
     public async Task SaveChatHistory(string userConnectionId, ChatHistory chatHistory)
@@ -44,7 +44,9 @@ public class ChatHistoryDataService : IChatHistoryDataService
         ArgumentNullException.ThrowIfNull(userConnectionId);
         ArgumentNullException.ThrowIfNull(chatHistory);
 
-        var userChatHistory = await GetChatHistoryByUser(userConnectionId) ?? new UserChatHistory();
+        var userChatHistory =
+            await GetChatHistoryByUser(userConnectionId)
+            ?? new UserChatHistory() { UserChatConnectId = userConnectionId };
         userChatHistory.ChatHistory = chatHistory;
 
         await _userChatHistory.InsertOneAsync(userChatHistory);

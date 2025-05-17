@@ -49,7 +49,7 @@ builder.Services.AddSingleton<IChatCompletionService>(sp =>
     return new OpenAIChatCompletionService(openAIConfiguration.Model, openAIConfiguration.ApiKey);
 });
 
-builder.Services.AddSingleton<TimePlugin>();
+builder.Services.AddSingleton<HealthCareAgent.Brain.Plugins.FunctionPlugins.TimePlugin>();
 builder.Services.AddSingleton<UserIntentPlugin>();
 builder.Services.AddSingleton<MedicalProviderDatabasePlugin>();
 builder.Services.AddSingleton<SummaryPlugin>();
