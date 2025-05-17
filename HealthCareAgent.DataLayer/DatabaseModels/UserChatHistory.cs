@@ -1,3 +1,9 @@
 namespace HealthCareAgent.DataLayer.DatabaseModels;
 
-public class UserChatHistory { }
+using Microsoft.SemanticKernel.ChatCompletion;
+
+public class UserChatHistory
+{
+    public string UserChatConnectId { get; set; } = string.Empty;
+    public ChatHistory ChatHistory { get; set; } = [];
+}

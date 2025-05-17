@@ -6,10 +6,12 @@ public class UserIntentPlugin(
 )
 {
     [KernelFunction("get_user_intent")]
-    [Description("Recognizes and provides user intent")]
+    [Description(
+        "Used to Recognize the intent of the user based on the current message and the history"
+    )]
     public async Task<string> GetUserIntent(
         [Description("user current chat message")] string userMessage,
-        [Description("chathistory")] string summarizedHistory,
+        [Description("user agent summarized chat history")] string summarizedHistory,
         Kernel kernel
     )
     {

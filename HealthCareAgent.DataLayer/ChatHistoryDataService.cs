@@ -1,10 +1,12 @@
+using Microsoft.SemanticKernel.ChatCompletion;
+
 namespace HealthCareAgent.DataLayer;
 
 public interface IChatHistoryDataService
 {
-    public Task<string> GetChatHistoryByUser(string userConnectionId);
+    public Task<UserChatHistory> GetChatHistoryByUser(string userConnectionId);
 
-    public Task<int> SaveChatHistory(string userConnectionId, string chatHistorySummary);
+    public Task SaveChatHistory(string userConnectionId, ChatHistory chatHistorySummary);
 }
 
 public class ChatHistoryDataService : IChatHistoryDataService
@@ -26,15 +28,25 @@ public class ChatHistoryDataService : IChatHistoryDataService
         _userChatHistory = database.GetCollection<UserChatHistory>(options.Value.CollectionName);
     }
 
-    public Task<string> GetChatHistoryByUser(string userConnectionId)
+    public async Task<UserChatHistory> GetChatHistoryByUser(string userConnectionId)
     {
         _logger.LogInformation("Fetching user chat history");
-        throw new NotImplementedException();
+        var filter = Builders<UserChatHistory>.Filter.Eq(
+            up => up.UserChatConnectId,
+            userConnectionId
+        );
+        return await _userChatHistory.Find(filter).FirstOrDefaultAsync();
     }
 
-    public Task<int> SaveChatHistory(string userConnectionId, string chatHistorySummary)
+    public async Task SaveChatHistory(string userConnectionId, ChatHistory chatHistory)
     {
         _logger.LogInformation("Saving User Chat History");
-        throw new NotImplementedException();
+        ArgumentNullException.ThrowIfNull(userConnectionId);
+        ArgumentNullException.ThrowIfNull(chatHistory);
+
+        var userChatHistory = await GetChatHistoryByUser(userConnectionId) ?? new UserChatHistory();
+        userChatHistory.ChatHistory = chatHistory;
+
+        await _userChatHistory.InsertOneAsync(userChatHistory);
     }
 }

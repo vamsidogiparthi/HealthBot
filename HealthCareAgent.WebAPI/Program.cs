@@ -49,12 +49,24 @@ builder.Services.AddSingleton<IChatCompletionService>(sp =>
     return new OpenAIChatCompletionService(openAIConfiguration.Model, openAIConfiguration.ApiKey);
 });
 
+builder.Services.AddSingleton<TimePlugin>();
+builder.Services.AddSingleton<UserIntentPlugin>();
+builder.Services.AddSingleton<MedicalProviderDatabasePlugin>();
+builder.Services.AddSingleton<SummaryPlugin>();
+builder.Services.AddSingleton<ConversationSummaryPlugin>();
+
 builder.Services.AddKeyedTransient(
     "ChatBotKernel",
     (sp, key) =>
     {
         KernelPluginCollection kernelFunctions = [];
-        kernelFunctions.AddFromObject(sp.GetRequiredService<TimePlugin>());
+        kernelFunctions.AddFromObject(
+            sp.GetRequiredService<HealthCareAgent.Brain.Plugins.FunctionPlugins.TimePlugin>()
+        );
+        kernelFunctions.AddFromObject(sp.GetRequiredService<UserIntentPlugin>());
+        kernelFunctions.AddFromObject(sp.GetRequiredService<MedicalProviderDatabasePlugin>());
+        kernelFunctions.AddFromObject(sp.GetRequiredService<SummaryPlugin>());
+        kernelFunctions.AddFromObject(sp.GetRequiredService<ConversationSummaryPlugin>());
         return new Kernel(sp, kernelFunctions);
     }
 );
