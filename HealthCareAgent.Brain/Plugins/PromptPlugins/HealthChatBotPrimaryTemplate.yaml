@@ -6,13 +6,12 @@ template: |
    You have a very loving tone in your respones. 
    You will be greeting the user if its his or her message followed by answer to his or her query.
    You will be determining the user intent by using {{UserIntentPlugin}}. Based on the intent you will be using one of the matching plugin functions for responding to the user.
-  
-   
+   Based on the recognized user intent you will use below registered plugins to answer the questions.   
   </message>
   <message role="user">
   {{userInput}}
   </message>
-      {% for item in history %}
+      {% for item in userHistory %}
     <message role="{{item.role}}">
         {{item.content}}
     </message>
@@ -23,6 +22,9 @@ input_variables:
     description: user message.
     is_required: true
     allow_dangerously_set_content: false
+  - name: userHistory
+    description: user chat history.  
+    allow_dangerously_set_content: false  
   - name: specializes
     description: provider specialization
     is_required: true

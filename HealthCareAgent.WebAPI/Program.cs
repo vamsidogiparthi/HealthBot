@@ -1,3 +1,5 @@
+using HealthCareAgent.WebAPI.Hubs;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -11,6 +13,7 @@ var configuration = new ConfigurationBuilder()
     .Build();
 
 builder.Services.AddOpenApi();
+builder.Services.AddSignalR();
 builder.Services.AddControllers();
 builder.Services.AddLogging(p =>
     p.AddConsole().AddConfiguration(builder.Configuration.GetSection("Logging"))
@@ -80,6 +83,6 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseRouting();
-app.UseWebSockets();
 app.MapControllers();
+app.MapHub<ChatHub>("/ChatHub");
 app.UseHttpsRedirection();
