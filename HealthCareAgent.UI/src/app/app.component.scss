@@ -1,0 +1,19 @@
+main {
+  width: 90%;
+  max-width: 50rem;
+  margin: 2.5rem auto;
+  display: grid;
+  grid-auto-flow: row;
+  gap: 2rem;
+  position: relative;
+  justify-content: center;
+  align-content: center;
+  box-shadow: 0cqb;
+}
+
+@media (min-width: 768px) {
+  main {
+    margin: 4rem auto;
+    grid-template-columns: 6fr;
+  } 
+}

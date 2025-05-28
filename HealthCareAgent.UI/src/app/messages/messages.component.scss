@@ -1,0 +1,78 @@
+.chat-messages {
+  border-radius: 6px;
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.1);
+  overflow: hidden;  
+  flex-direction: column;
+  display: flex;
+  gap: 5px;
+}
+
+.Agent {
+  padding: 0.5rem 0.5rem;
+  flex-direction: column;  
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  background: linear-gradient(to bottom, #541d88, #811fe4);
+  color: #ede9f1;
+  border-radius: 6px;
+  margin: 0.25rem 0;
+  box-shadow: 0 1px 8px rgba(0, 0, 0, 0.6);
+}
+
+.User {
+  align-self: flex-end;
+  padding: 0.35rem 0.5rem;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  background: #bb7df1;
+  color: #ede9f1;
+  border-radius: 6px;
+  margin: 0.25rem 0;
+  align-items: right;
+  box-shadow: 0 1px 8px rgba(0, 0, 0, 0.6);
+  text-align: right;
+}
+
+.message-content {
+    gap: 0.25rem;
+    padding-top: 0.15rem;
+}
+
+span {
+  margin: 0;
+  padding: 0;
+  font-size: 0.8rem;
+  font-weight: normal;
+}
+
+
+
+/* Input area style */
+.input-container {
+  padding: 0.5rem 0.5rem;
+  position: fixed; 
+  left: 0; 
+  width: 100%;
+  display: flex;
+  align-items: center;
+  bottom: 0;
+}
+
+.input-container textarea {
+  flex: 1;           /* Input takes available horizontal space */
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;             /* Remove default outline */
+}
+
+.input-container button {
+  background:  #811fe4;
+  border: none;
+  border-radius: 4px; 
+  color: #fff;
+  padding: 1.2rem;
+  cursor: pointer;
+}

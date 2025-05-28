@@ -1,0 +1,13 @@
+<div class="chat-input-container">
+  <textarea
+    [(ngModel)]="message"
+    (input)="autoResize()"
+    #textArea
+    placeholder="Type a message..."
+  ></textarea>
+  <!-- <button matFab extended>
+        <mat-icon>favorite</mat-icon>
+        Basic
+      </button> -->
+  <button (click)="sendMessage()" [disabled]="!message.trim()">Send</button>
+</div>

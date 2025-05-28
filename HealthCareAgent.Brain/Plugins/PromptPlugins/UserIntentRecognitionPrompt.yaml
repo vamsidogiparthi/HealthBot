@@ -31,7 +31,7 @@ template: |
         {{item.content}}
     </message>
 template_format: handlebars
-description: This is a user intent recognizer
+description: This a user intent recognition prompt template.
 input_variables:
   - name: userInput
     description: user message.
