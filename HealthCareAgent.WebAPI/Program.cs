@@ -1,3 +1,4 @@
+using HealthCareAgent.Brain;
 using HealthCareAgent.WebAPI.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -22,6 +23,10 @@ builder.Services.AddOptions();
 builder.Services.AddSingleton<IChatHistoryDataService, ChatHistoryDataService>();
 builder.Services.Configure<OpenAIConfiguration>(
     configuration.GetSection(OpenAIConfiguration.SectionName)
+);
+
+builder.Services.Configure<GoogleCustomSearchConfiguration>(
+    configuration.GetSection(GoogleCustomSearchConfiguration.SectionName)
 );
 
 builder.Services.Configure<ChatHistoryDataServiceConfiguration>(
@@ -57,6 +62,7 @@ builder.Services.AddSingleton<UserIntentPlugin>();
 builder.Services.AddSingleton<MedicalProviderDatabasePlugin>();
 builder.Services.AddSingleton<SummaryPlugin>();
 builder.Services.AddSingleton<ConversationSummaryPlugin>();
+builder.Services.AddSingleton<IBrain, Brain>();
 
 builder.Services.AddKeyedTransient(
     "ChatBotKernel",
@@ -86,3 +92,4 @@ app.UseRouting();
 app.MapControllers();
 app.MapHub<ChatHub>("/ChatHub");
 app.UseHttpsRedirection();
+await app.Services.GetRequiredService<IBrain>().RunMedicalProviderSearchAsync("10001");

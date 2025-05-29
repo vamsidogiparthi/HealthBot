@@ -9,6 +9,7 @@ namespace HealthCareAgent.Brain;
 public interface IBrain
 {
     Task<string> RunAsync(string userMessage, string userConnectionId);
+    Task<string> RunMedicalProviderSearchAsync(string zipcode);
 }
 
 public class Brain(
@@ -42,5 +43,17 @@ public class Brain(
         await chatHistoryDataService.SaveChatHistory(userConnectionId, chatHistory.ChatHistory);
 
         return chatMessage.Content ?? string.Empty;
+    }
+
+    public async Task<string> RunMedicalProviderSearchAsync(string zipcode)
+    {
+        _logger.LogInformation("Initiating the chat process without user connection ID");
+        var result = await kernel.InvokeAsync(
+            "MedicalProviderDatabasePlugin",
+            "search_providers",
+            new KernelArguments() { { "zipcode", zipcode }, { "kernel", kernel } }
+        );
+
+        return result.ToString() ?? string.Empty;
     }
 }

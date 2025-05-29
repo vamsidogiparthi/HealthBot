@@ -10,7 +10,7 @@ public class MedicalProviderDatabasePlugin(
     IOptions<GoogleCustomSearchConfiguration> googleSearchOptions
 )
 {
-    [KernelFunction("get-medical-providers")]
+    [KernelFunction("get_medical_providers")]
     [Description(
         "This function is responsible for initiating the provider information data when needed during the chat"
     )]
@@ -47,7 +47,7 @@ public class MedicalProviderDatabasePlugin(
         return response.ToString();
     }
 
-    [KernelFunction("search-providers")]
+    [KernelFunction("search_providers")]
     [Description("This function conducts a web search using bing for near by medical providers")]
     public async Task<string> ConductProviderSearch(
         [Description("user provided zipcode")] string zipcode,
@@ -61,7 +61,8 @@ public class MedicalProviderDatabasePlugin(
         );
 #pragma warning restore SKEXP0050 // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
 
-        var query = $"Search for medical providers, doctors, hospital by zipcode = {zipcode}";
+        var query =
+            $"Search for medical providers, doctors, hospital by zipcode = {zipcode}. Please provide the results in a structured format. No website recommedations, just the information about the providers with addresses etc in json format. top 4.";
         var prompt = "{{GoogleSearchPlugin.Search $query}}. {{$query}}";
         // Build a text search plugin with Bing search and add to the kernel
         var searchPlugin = textSearch.CreateWithSearch("GoogleSearchPlugin");
@@ -70,7 +71,7 @@ public class MedicalProviderDatabasePlugin(
         var arguments = new KernelArguments() { { "query", query } };
 
         var response = await kernel.InvokePromptAsync(prompt, arguments);
-
+        logger.LogInformation("Conducted provider search with response: {response}", response);
         return response.ToString();
     }
 }
