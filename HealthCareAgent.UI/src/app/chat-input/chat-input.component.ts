@@ -3,6 +3,8 @@ import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatIconModule } from '@angular/material/icon';
+import { MessageService } from '../services/message.service';
+import { Message } from '../models/message.model';
 
 @Component({
   selector: 'app-chat-input',
@@ -15,6 +17,7 @@ export class ChatInputComponent {
 
   @ViewChild('textArea') textArea!: ElementRef<HTMLTextAreaElement>;
 
+  constructor(public messageService: MessageService) {}
   autoResize(): void {
     const textarea = this.textArea.nativeElement;
     textarea.style.height = 'auto';
@@ -24,6 +27,11 @@ export class ChatInputComponent {
   sendMessage(): void {
     if (!this.message.trim()) return;
     console.log('Sending message:', this.message);
+
+    const messageClass = new Message('User', 'Agent', this.message, new Date());
+
+    console.log('Sending message:', messageClass);
+    this.messageService.addMessage(messageClass);
     this.message = '';
     this.autoResize(); // reset height
   }

@@ -1,5 +1,9 @@
 <div class="chat-messages">
-  <div *ngFor="let message of messages" class="message" [ngClass]="message.sender">
+  <div
+    *ngFor="let message of messages$ | async"
+    class="message"
+    [ngClass]="message.sender"
+  >
     <div class="message-header">
       <span class="message-sender">{{ message.sender }}: </span>
       <span class="message-timestamp">{{
@@ -9,11 +13,6 @@
     <div class="message-content">
       {{ message.content }}
     </div>
-  </div>
-
-  <div class="input-container">
-    <textarea type="text" placeholder="Type a message..."></textarea>
-    <span><button>Send</button></span>
   </div>
   <app-chat-input></app-chat-input>
 </div>

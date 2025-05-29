@@ -1,11 +1,13 @@
 using Microsoft.SemanticKernel.Data;
 using Microsoft.SemanticKernel.Plugins.Web.Bing;
+using Microsoft.SemanticKernel.Plugins.Web.Google;
 
 namespace HealthCareAgent.Brain.Plugins.FunctionPlugins;
 
 public class MedicalProviderDatabasePlugin(
     ILogger<MedicalProviderDatabasePlugin> logger,
-    IOptions<OpenAIConfiguration> options
+    IOptions<OpenAIConfiguration> options,
+    IOptions<GoogleCustomSearchConfiguration> googleSearchOptions
 )
 {
     [KernelFunction("get-medical-providers")]
@@ -53,13 +55,16 @@ public class MedicalProviderDatabasePlugin(
     )
     {
 #pragma warning disable SKEXP0050 // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
-        var textSearch = new BingTextSearch(apiKey: "<Your Bing API Key>");
+        var textSearch = new GoogleTextSearch(
+            searchEngineId: googleSearchOptions.Value.SearchEngineId,
+            apiKey: googleSearchOptions.Value.ApiKey
+        );
 #pragma warning restore SKEXP0050 // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
 
         var query = $"Search for medical providers, doctors, hospital by zipcode = {zipcode}";
-        var prompt = "{{SearchPlugin.Search $query}}. {{$query}}";
+        var prompt = "{{GoogleSearchPlugin.Search $query}}. {{$query}}";
         // Build a text search plugin with Bing search and add to the kernel
-        var searchPlugin = textSearch.CreateWithSearch("SearchPlugin");
+        var searchPlugin = textSearch.CreateWithSearch("GoogleSearchPlugin");
         kernel.Plugins.Add(searchPlugin);
 
         var arguments = new KernelArguments() { { "query", query } };

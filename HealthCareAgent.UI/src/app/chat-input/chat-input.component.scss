@@ -5,10 +5,9 @@
   right: 0;
   display: flex;
   gap: 0.75rem;
-  padding: 1rem; 
+  padding: 1rem;
   background: radial-gradient(circle at top left, #181023, #0b0519);
   z-index: 100;
-  
 
   textarea {
     flex: 1;
@@ -31,7 +30,7 @@
   }
 
   button {
-    background:  #811fe4;
+    background: #811fe4;
     color: white;
     border: none;
     border-radius: 0.5rem;
@@ -44,5 +43,9 @@
       background-color: #a85ef1;
     }
 
+    &:disabled {
+      background-color: #b981f1;
+      cursor: not-allowed;
+    }
   }
 }
