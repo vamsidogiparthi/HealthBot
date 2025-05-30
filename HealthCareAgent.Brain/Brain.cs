@@ -19,11 +19,12 @@ public class Brain(
 ) : IBrain
 {
     private readonly Kernel _kernel = kernel;
-    private readonly ILogger<Brain> _logger = logger;
+    private readonly ILogger<Brain> logger = logger;
+    private readonly IChatHistoryDataService chatHistoryDataService = chatHistoryDataService;
 
     public async Task<string> RunAsync(string userMessage, string userConnectionId)
     {
-        _logger.LogInformation("Initiating the chat process");
+        logger.LogInformation("Initiating the chat process");
         var chatCompletionService = _kernel.GetRequiredService<IChatCompletionService>();
         OpenAIPromptExecutionSettings openAIPromptExecutionSettings = new()
         {
@@ -37,7 +38,7 @@ public class Brain(
             chatHistory.ChatHistory,
             openAIPromptExecutionSettings
         );
-        _logger.LogInformation("Response > {chatMessage}", chatMessage);
+        logger.LogInformation("Response > {chatMessage}", chatMessage);
         chatHistory.ChatHistory.AddAssistantMessage(chatMessage.Content ?? string.Empty);
 
         await chatHistoryDataService.SaveChatHistory(userConnectionId, chatHistory.ChatHistory);
@@ -47,11 +48,11 @@ public class Brain(
 
     public async Task<string> RunMedicalProviderSearchAsync(string zipcode)
     {
-        _logger.LogInformation("Initiating the chat process without user connection ID");
-        var result = await kernel.InvokeAsync(
+        logger.LogInformation("Initiating the chat process without user connection ID");
+        var result = await _kernel.InvokeAsync(
             "MedicalProviderDatabasePlugin",
             "search_providers",
-            new KernelArguments() { { "zipcode", zipcode }, { "kernel", kernel } }
+            new KernelArguments() { { "zipcode", zipcode }, { "kernel", _kernel } }
         );
 
         return result.ToString() ?? string.Empty;
