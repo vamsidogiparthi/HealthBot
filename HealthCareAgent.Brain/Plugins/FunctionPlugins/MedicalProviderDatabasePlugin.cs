@@ -7,7 +7,8 @@ namespace HealthCareAgent.Brain.Plugins.FunctionPlugins;
 public class MedicalProviderDatabasePlugin(
     ILogger<MedicalProviderDatabasePlugin> logger,
     IOptions<OpenAIConfiguration> options,
-    IOptions<GoogleCustomSearchConfiguration> googleSearchOptions
+    // IOptions<GoogleCustomSearchConfiguration> googleSearchOptions,
+    IMedicalProviderAPIService medicalProviderAPIService
 )
 {
     [KernelFunction("get_medical_providers")]
@@ -54,23 +55,45 @@ public class MedicalProviderDatabasePlugin(
         Kernel kernel
     )
     {
-#pragma warning disable SKEXP0050 // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
-        var textSearch = new GoogleTextSearch(
-            searchEngineId: googleSearchOptions.Value.SearchEngineId,
-            apiKey: googleSearchOptions.Value.ApiKey
-        );
-#pragma warning restore SKEXP0050 // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
+        // #pragma warning disable SKEXP0050 // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
+        //         var textSearch = new GoogleTextSearch(
+        //             searchEngineId: googleSearchOptions.Value.SearchEngineId,
+        //             apiKey: googleSearchOptions.Value.ApiKey
+        //         );
+        // #pragma warning restore SKEXP0050 // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
 
-        var query =
-            $"Search for medical providers, doctors, hospital by zipcode = {zipcode}. Please provide the results in a structured format. No website recommedations, just the information about the providers with addresses etc in json format. top 4.";
-        var prompt = "{{GoogleSearchPlugin.Search $query}}. {{$query}}";
-        // Build a text search plugin with Bing search and add to the kernel
-        var searchPlugin = textSearch.CreateWithSearch("GoogleSearchPlugin");
-        kernel.Plugins.Add(searchPlugin);
+        //         var searchPlugin = textSearch.CreateWithGetTextSearchResults("SearchPlugin");
+        //         kernel.Plugins.Add(searchPlugin);
+        //         var query = $"Near by medical providers in {zipcode}";
+        //         string promptTemplate = """
+        //             {{#with (SearchPlugin-GetTextSearchResults query)}}
+        //                 {{#each this}}
+        //                 Name: {{Name}}
+        //                 Value: {{Value}}
+        //                 Link: {{Link}}
+        //                 -----------------
+        //                 {{/each}}
+        //             {{/with}}
 
-        var arguments = new KernelArguments() { { "query", query } };
+        //             {{query}}
 
-        var response = await kernel.InvokePromptAsync(prompt, arguments);
+        //             Use Google Maps or real-time google search data. Include the name, address, phone number, and website of the medical providers in your response.
+        //             If you cannot find any medical providers, respond with "No medical providers found in the specified area."
+        //             """;
+        //         KernelArguments arguments = new() { { "query", query } };
+        //         HandlebarsPromptTemplateFactory promptTemplateFactory = new();
+        //         // Build a text search plugin with Bing search and add to the kernel
+
+        //         var response = await kernel.InvokePromptAsync(
+        //             promptTemplate,
+        //             arguments,
+        //             templateFormat: HandlebarsPromptTemplateFactory.HandlebarsTemplateFormat,
+        //             promptTemplateFactory: promptTemplateFactory
+        //         );
+        //         logger.LogInformation("Conducted provider search with response: {response}", response);
+        //         return response.ToString();
+
+        var response = await medicalProviderAPIService.SearchProvidersAsync(zipcode);
         logger.LogInformation("Conducted provider search with response: {response}", response);
         return response.ToString();
     }

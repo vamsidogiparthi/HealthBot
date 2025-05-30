@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
-import { MessageRelayServiceService } from './message-relay-service.service';
+import { MessageRelayService } from './message-relay-service.service';
 
 describe('MessageRelayServiceService', () => {
-  let service: MessageRelayServiceService;
+  let service: MessageRelayService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(MessageRelayServiceService);
+    service = TestBed.inject(MessageRelayService);
   });
 
   it('should be created', () => {

@@ -1,4 +1,5 @@
 using HealthCareAgent.Brain;
+using HealthCareAgent.Brain.Services;
 using HealthCareAgent.WebAPI.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -16,6 +17,7 @@ var configuration = new ConfigurationBuilder()
 builder.Services.AddOpenApi();
 builder.Services.AddSignalR();
 builder.Services.AddControllers();
+builder.Services.AddHttpClient();
 builder.Services.AddLogging(p =>
     p.AddConsole().AddConfiguration(builder.Configuration.GetSection("Logging"))
 );
@@ -36,6 +38,12 @@ builder.Services.Configure<ChatHistoryDataServiceConfiguration>(
 builder.Services.Configure<GoogleAIConfiguration>(
     configuration.GetSection(GoogleAIConfiguration.SectionName)
 );
+
+builder.Services.Configure<MedicalProviderAPIConfiguration>(
+    configuration.GetSection(MedicalProviderAPIConfiguration.SectionName)
+);
+
+builder.Services.AddSingleton<IMedicalProviderAPIService, MedicalProviderAPIService>();
 
 builder.Services.AddSingleton<IChatCompletionService>(sp =>
 {
