@@ -40,12 +40,8 @@ template: |
        }       
   </message>
   <message role="user">
-  {{userInput}}
+  {{userInput}} {{chatHistory}}
   </message>
-      {% for item in history %}
-    <message role="{{item.role}}">
-        {{item.content}}
-    </message>
 template_format: handlebars
 description: This is sickness advisor template
 input_variables:
@@ -54,16 +50,14 @@ input_variables:
     is_required: true
     allow_dangerously_set_content: false
   - name: symptoms
-    description: user sickness symptoms
-    is_required: true
+    description: user sickness symptoms    
     allow_dangerously_set_content: false
   - name: chatHistory
     description: user chat history
     is_required: true
     allow_dangerously_set_content: false    
   - name: userAge
-    description: user age for symptom check and first aid instructions
-    is_required: true
+    description: user age for symptom check and first aid instructions    
     allow_dangerously_set_content: false
   - name: userMedicalHistory
     description: user medical history to understand any allergies, current medication etc.    

@@ -1,15 +1,16 @@
 namespace HealthCareAgent.Brain.Plugins.FunctionPlugins;
 
-public class UserIntentPlugin(
-    IOptions<OpenAIConfiguration> openAIConfiguration,
-    ILogger<UserIntentPlugin> logger
+public class SicknessAdvisorPlugin(
+    ILogger<SicknessAdvisorPlugin> logger,
+    IOptions<OpenAIConfiguration> options
+// IOptions<GoogleCustomSearchConfiguration> googleSearchOptions,
 )
 {
-    [KernelFunction("get_user_intent")]
+    [KernelFunction("provide_sickness_advice")]
     [Description(
-        "Used to Recognize the intent of the user based on the current message and the history"
+        "This function is responsible for providing advice on sickness based on user input and medical knowledge"
     )]
-    public async Task<string> GetUserIntent(
+    public async Task<string> GetSicknessAdvise(
         [Description("user current chat message")] string userMessage,
         [Description("user agent summarized chat history")] string summarizedHistory,
         Kernel kernel
@@ -19,11 +20,11 @@ public class UserIntentPlugin(
         OpenAIPromptExecutionSettings openAIPromptExecutionSettings = new()
         {
             FunctionChoiceBehavior = FunctionChoiceBehavior.Required(),
-            ModelId = openAIConfiguration.Value.Model,
+            ModelId = options.Value.Model,
             ToolCallBehavior = ToolCallBehavior.AutoInvokeKernelFunctions,
         };
 
-        var handlebarsPromptYaml = EmbeddedResource.Read("UserIntentRecognitionPrompt.yaml");
+        var handlebarsPromptYaml = EmbeddedResource.Read("SicknessAdvicePromptTemplate.yaml");
         var templateFactory = new HandlebarsPromptTemplateFactory();
         var function = kernel.CreateFunctionFromPromptYaml(handlebarsPromptYaml, templateFactory);
 

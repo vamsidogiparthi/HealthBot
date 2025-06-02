@@ -1,6 +1,6 @@
 <div class="chat-messages">
   <div
-    *ngFor="let message of messages$ | async"
+    *ngFor="let message of messages()"
     class="message"
     [ngClass]="message.sender"
   >
@@ -14,5 +14,5 @@
       {{ message.content }}
     </div>
   </div>
-  <app-chat-input></app-chat-input>
+  <app-chat-input (sendMessageEvent)="sendMessage($event)"></app-chat-input>
 </div>

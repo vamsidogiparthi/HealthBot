@@ -14,13 +14,7 @@ export class MessageService {
         'User',
         'Hello! Welcome to health care chat bot. How can I help you?',
         new Date()
-      ),
-      new Message(
-        'User',
-        'Agent',
-        'Hi, I have a question about my health.',
-        new Date()
-      ),
+      )     
     ]);
   }
 

@@ -51,8 +51,7 @@ public class MedicalProviderDatabasePlugin(
     [KernelFunction("search_providers")]
     [Description("This function conducts a web search using bing for near by medical providers")]
     public async Task<string> ConductProviderSearch(
-        [Description("user provided zipcode")] string zipcode,
-        Kernel kernel
+        [Description("user provided zipcode")] string zipcode
     )
     {
         // #pragma warning disable SKEXP0050 // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.

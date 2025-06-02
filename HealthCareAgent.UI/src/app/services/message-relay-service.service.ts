@@ -6,7 +6,14 @@ import { Message } from '../models/message.model';
 })
 export class MessageRelayService {
   private hubConnection!: HubConnection;
-  messages = signal<Message[]>([]);
+  messages = signal<Message[]>([
+    new Message(
+      'Agent',
+      'User',
+      'Hello! Welcome to health care chat bot. How can I help you?',
+      new Date()
+    ),
+  ]);
   connectionStatus = signal<'disconnected' | 'connecting' | 'connected'>(
     'disconnected'
   );
@@ -27,13 +34,16 @@ export class MessageRelayService {
 
     // Incoming messages
     this.hubConnection.on('ReceiveMessage', (message: Message) => {
+      console.log('Received message:', message);
       this.messages.update((msgs) => [...msgs, message]);
     });
   }
 
   sendMessage(message: Message) {
     this.hubConnection.invoke('SendMessage', message).then(() => {
-      this.messages.update((msgs) => [...msgs, message]);
+      console.log('Message sent:', message);
+      this.messages.set([...this.messages(), message]); // Update the signal with the new message
+      console.log(this.messages());
     });
   }
 

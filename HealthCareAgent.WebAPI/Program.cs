@@ -18,6 +18,17 @@ builder.Services.AddOpenApi();
 builder.Services.AddSignalR();
 builder.Services.AddControllers();
 builder.Services.AddHttpClient();
+builder.Services.AddCors(options =>
+    options.AddPolicy(
+        "AngularApp",
+        policy =>
+            policy
+                .WithOrigins("http://localhost:4200")
+                .AllowAnyHeader()
+                .AllowAnyMethod()
+                .AllowCredentials()
+    )
+);
 builder.Services.AddLogging(p =>
     p.AddConsole().AddConfiguration(builder.Configuration.GetSection("Logging"))
 );
@@ -69,6 +80,7 @@ builder.Services.AddSingleton<HealthCareAgent.Brain.Plugins.FunctionPlugins.Time
 builder.Services.AddSingleton<UserIntentPlugin>();
 builder.Services.AddSingleton<MedicalProviderDatabasePlugin>();
 builder.Services.AddSingleton<SummaryPlugin>();
+builder.Services.AddSingleton<SicknessAdvisorPlugin>();
 builder.Services.AddSingleton<ConversationSummaryPlugin>();
 builder.Services.AddSingleton<IBrain, Brain>();
 
@@ -84,6 +96,7 @@ builder.Services.AddKeyedTransient(
         kernelFunctions.AddFromObject(sp.GetRequiredService<MedicalProviderDatabasePlugin>());
         kernelFunctions.AddFromObject(sp.GetRequiredService<SummaryPlugin>());
         kernelFunctions.AddFromObject(sp.GetRequiredService<ConversationSummaryPlugin>());
+        kernelFunctions.AddFromObject(sp.GetRequiredService<SicknessAdvisorPlugin>());
         return new Kernel(sp, kernelFunctions);
     }
 );
@@ -100,4 +113,7 @@ app.UseRouting();
 app.MapControllers();
 app.MapHub<ChatHub>("/ChatHub");
 app.UseHttpsRedirection();
-await app.Services.GetRequiredService<IBrain>().RunMedicalProviderSearchAsync("10001");
+app.UseCors("AngularApp");
+
+//await app.Services.GetRequiredService<IBrain>().RunMedicalProviderSearchAsync("10001");
+app.Run();

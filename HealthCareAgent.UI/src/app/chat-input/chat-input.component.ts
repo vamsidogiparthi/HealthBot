@@ -1,4 +1,4 @@
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import { Component, ElementRef, output, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDividerModule } from '@angular/material/divider';
@@ -15,6 +15,7 @@ import { Message } from '../models/message.model';
 export class ChatInputComponent {
   message: string = '';
 
+  sendMessageEvent = output<string>();
   @ViewChild('textArea') textArea!: ElementRef<HTMLTextAreaElement>;
 
   constructor(public messageService: MessageService) {}
@@ -30,8 +31,8 @@ export class ChatInputComponent {
 
     const messageClass = new Message('User', 'Agent', this.message, new Date());
 
-    console.log('Sending message:', messageClass);
-    this.messageService.addMessage(messageClass);
+    console.log('Sending message:', messageClass);    
+    this.sendMessageEvent.emit(this.message); // Emit the message to parent component
     this.message = '';
     this.autoResize(); // reset height
   }

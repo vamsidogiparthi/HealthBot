@@ -16,8 +16,7 @@ template: |
     - MedicineEducation = ["What are the dosage instructions of a tylenol for 50 year old", "What is paracetemol?"]
     - Unknown = ["Help me buy a drink", "what is your name?"]
    
-
-   #Output: The output you should produce should be an enum of one of the above intents. No comments, no other things.
+   #Output Examples: The output you should produce should be an enum of one of the above intents. No comments, no other things.
     - Example Output 1:
        SicknessAdvice    
     - Example Output 2:
@@ -25,11 +24,7 @@ template: |
   </message>
   <message role="user">
   {{userInput}}
-  </message>
-      {% for item in chat history %}
-    <message role="{{item.role}}">
-        {{item.content}}
-    </message>
+  </message>  
 template_format: handlebars
 description: This a user intent recognition prompt template.
 input_variables:

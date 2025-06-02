@@ -19,4 +19,9 @@
     <ProjectReference Include="..\HealthCareAgent.DataLayer\HealthCareAgent.DataLayer.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <EmbeddedResource Include="Plugins\PromptPlugins\UserIntentRecognitionPrompt.yaml" />
+    <EmbeddedResource Include="Plugins\PromptPlugins\SicknessAdvicePromptTemplate.yaml" />
+  </ItemGroup>
+
 </Project>

@@ -1,6 +1,8 @@
+using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using HealthCareAgent.Brain.Models;
 
 namespace HealthCareAgent.Brain.Services;
 
@@ -64,10 +66,8 @@ public class MedicalProviderAPIService(
         StringContent content = new(json, Encoding.UTF8, "application/json");
         var response = await client.PostAsync(requestUrl, content);
         logger.LogInformation("Response status code: {StatusCode}", response.StatusCode);
-        logger.LogInformation(
-            "Response content: {Content}",
-            await response.Content.ReadAsStringAsync()
-        );
+        var responseContent = await response.Content.ReadFromJsonAsync<MedAPIResponse>();
+        logger.LogInformation("Response content: {Content}", responseContent?.ToString() ?? "null");
         return await response.Content.ReadAsStringAsync();
     }
 }
