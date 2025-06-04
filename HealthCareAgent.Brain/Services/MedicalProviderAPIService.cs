@@ -9,6 +9,22 @@ namespace HealthCareAgent.Brain.Services;
 public interface IMedicalProviderAPIService
 {
     Task<string> SearchProvidersAsync(string zipcode, string? specializations = "");
+    Task<string[]> MedicalSpecializationsAsync()
+    {
+        var sample_data = EmbeddedResource.Read("Sample_Provider_Data.json");
+        if (!string.IsNullOrEmpty(sample_data))
+        {
+            var deserializedData = JsonSerializer.Deserialize<MedAPIResponse>(sample_data);
+
+            var distinctSpecializations = deserializedData
+                ?.Results.Select(provider => provider.PriSpec)
+                .Distinct()
+                .ToArray();
+
+            return Task.FromResult(distinctSpecializations ?? []);
+        }
+        return Task.FromResult(Array.Empty<string>());
+    }
 }
 
 public record APICondition
@@ -62,6 +78,20 @@ public class MedicalProviderAPIService(
             ],
             Limit = 5,
         };
+
+        if (specializations is not null && specializations.Length > 0)
+        {
+            data.Conditions.Add(
+                new APICondition
+                {
+                    Resource = "t",
+                    Property = "pri_spec",
+                    Value = specializations,
+                    Operator = "contains",
+                }
+            );
+        }
+
         string json = JsonSerializer.Serialize(data);
         StringContent content = new(json, Encoding.UTF8, "application/json");
         var response = await client.PostAsync(requestUrl, content);

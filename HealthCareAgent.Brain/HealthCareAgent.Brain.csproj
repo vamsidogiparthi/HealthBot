@@ -22,6 +22,7 @@
   <ItemGroup>
     <EmbeddedResource Include="Plugins\PromptPlugins\UserIntentRecognitionPrompt.yaml" />
     <EmbeddedResource Include="Plugins\PromptPlugins\SicknessAdvicePromptTemplate.yaml" />
+    <EmbeddedResource Include="Assets\Sample_Provider_Data.json" />
   </ItemGroup>
 
 </Project>

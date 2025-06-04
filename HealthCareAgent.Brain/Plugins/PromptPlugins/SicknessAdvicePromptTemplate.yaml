@@ -16,12 +16,22 @@ template: |
     allergies: ["sulphur"]
     userZipCode: "10051"
 
+   #Output instructions: 
+    {
+        "followUpPrompt": followUpPrompt - the follow up prompt to ask user for missing information.
+        "Diagnosis": diagnosis - the diagnosis of the sickness based on user symptoms. If user symptoms are not complete, you should ask for them.
+        "FirstAid": firstAid - the first aid instructions based on user symptoms, age, medical history and allergies. If user symptoms are not complete, you should ask for them.
+        "ProviderSpecialization": providerSpecialization - the near determined matching specialization for the medical provider should be taken from {{MedicalProviderDatabasePlugin-distinct_provider_specializes}} plugin
+        "MedicalProviders": you need to MedicalProviderDatabasePlugin-search_providers plugin to get the medical providers based on user zipcode and provider specialization. If user zipcode is not provided, you should ask for it.
+    }
+
    #Output: The output you should produce should be an enum of one of the above intents. No comments, no other things.
-    - Example Output 1: when all the required fields are presented and Diagnosis is going on. No comments or markup. 
+    - Example Output 1: when all the required fields are presented and Diagnosis is going on. No comments or markup. The below is sample don't use it as is.
        {
         "followUpPrompt": "Can I know the symptoms?"
         "Diagnosis": "influenza"
         "FirstAid": "Take over the counter medicine xxx"
+        "ProviderSpecialization": "General Medicine" 
         "MedicalProviders": [{name: "Doctor X", "specializes": "General Medicine", "location": {"address": "123 NY", "State": "NY", "Zipcode": "10012", "Country": "USA", "City": "New York" }}]
        }
     - Example Output 2: when user symptoms are not complete. 
@@ -29,6 +39,7 @@ template: |
         "followUpPrompt": "I cannot recognize the symptoms, please provide them again."
         "Diagnosis": "unknown"
         "FirstAid": ""
+        "ProviderSpecialization": "unknown"
         "MedicalProviders": []
        }       
     - Example Output 3: whe user zipcode is missing. 
@@ -36,6 +47,7 @@ template: |
         "followUpPrompt": "Can you provide me your zipcode for medical providers"
         "Diagnosis": "influenza"
         "FirstAid": "Take over the counter medicine xxx"
+        "ProviderSpecialization": "General Medicine" 
         "MedicalProviders": [{name: "Doctor X", "specializes": "General Medicine", "location": {"address": "123 NY", "State": "NY", "Zipcode": "10012", "Country": "USA", "City": "New York" }}]
        }       
   </message>

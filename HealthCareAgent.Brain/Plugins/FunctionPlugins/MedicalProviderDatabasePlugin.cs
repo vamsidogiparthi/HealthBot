@@ -11,47 +11,48 @@ public class MedicalProviderDatabasePlugin(
     IMedicalProviderAPIService medicalProviderAPIService
 )
 {
-    [KernelFunction("get_medical_providers")]
-    [Description(
-        "This function is responsible for initiating the provider information data when needed during the chat"
-    )]
-    public async Task<string> GetListofMedicalProviders(
-        [Description("user chat message")] string userMessage,
-        [Description("doctor specializations needed to be pulled")] string specializes,
-        [Description("user location zipcode for searches")] string userZipcode,
-        Kernel kernel
-    )
-    {
-        logger.LogInformation("Recognizing user input");
-        OpenAIPromptExecutionSettings openAIPromptExecutionSettings = new()
-        {
-            FunctionChoiceBehavior = FunctionChoiceBehavior.Required(),
-            ModelId = options.Value.Model,
-            ToolCallBehavior = ToolCallBehavior.AutoInvokeKernelFunctions,
-        };
+    // [KernelFunction("get_medical_providers")]
+    // [Description(
+    //     "This function is responsible for initiating the provider information data when needed during the chat"
+    // )]
+    // public async Task<string> GetListofMedicalProviders(
+    //     [Description("user chat message")] string userMessage,
+    //     [Description("doctor specializations needed to be pulled")] string specializes,
+    //     [Description("user location zipcode for searches")] string userZipcode,
+    //     Kernel kernel
+    // )
+    // {
+    //     logger.LogInformation("Recognizing user input");
+    //     OpenAIPromptExecutionSettings openAIPromptExecutionSettings = new()
+    //     {
+    //         FunctionChoiceBehavior = FunctionChoiceBehavior.Required(),
+    //         ModelId = options.Value.Model,
+    //         ToolCallBehavior = ToolCallBehavior.AutoInvokeKernelFunctions,
+    //     };
 
-        var handlebarsPromptYaml = EmbeddedResource.Read("PromptTemplateTest.yaml");
-        var templateFactory = new HandlebarsPromptTemplateFactory();
-        var function = kernel.CreateFunctionFromPromptYaml(handlebarsPromptYaml, templateFactory);
+    //     var handlebarsPromptYaml = EmbeddedResource.Read("PromptTemplateTest.yaml");
+    //     var templateFactory = new HandlebarsPromptTemplateFactory();
+    //     var function = kernel.CreateFunctionFromPromptYaml(handlebarsPromptYaml, templateFactory);
 
-        var arguments = new KernelArguments()
-        {
-            { "userInput", userMessage },
-            { "specializes", specializes },
-            { "userZipcode", userZipcode },
-            { "executionSettings", openAIPromptExecutionSettings },
-        };
+    //     var arguments = new KernelArguments()
+    //     {
+    //         { "userInput", userMessage },
+    //         { "specializes", specializes },
+    //         { "userZipcode", userZipcode },
+    //         { "executionSettings", openAIPromptExecutionSettings },
+    //     };
 
-        var response = await kernel.InvokeAsync(function, arguments);
+    //     var response = await kernel.InvokeAsync(function, arguments);
 
-        logger.LogInformation("User input recognized {response}", response.ToString());
-        return response.ToString();
-    }
+    //     logger.LogInformation("User input recognized {response}", response.ToString());
+    //     return response.ToString();
+    // }
 
     [KernelFunction("search_providers")]
     [Description("This function conducts a web search using bing for near by medical providers")]
     public async Task<string> ConductProviderSearch(
-        [Description("user provided zipcode")] string zipcode
+        [Description("user provided zipcode")] string zipcode,
+        [Description("determined specialization of the medical provider")] string specializes
     )
     {
         // #pragma warning disable SKEXP0050 // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
@@ -92,8 +93,19 @@ public class MedicalProviderDatabasePlugin(
         //         logger.LogInformation("Conducted provider search with response: {response}", response);
         //         return response.ToString();
 
-        var response = await medicalProviderAPIService.SearchProvidersAsync(zipcode);
+        var response = await medicalProviderAPIService.SearchProvidersAsync(zipcode, specializes);
         logger.LogInformation("Conducted provider search with response: {response}", response);
         return response.ToString();
+    }
+
+    [KernelFunction("distinct_provider_specializes")]
+    [Description(
+        "This function retrieves distinct medical specializations from the provider database"
+    )]
+    public async Task<string[]> GetDistinctProviderSpecializes()
+    {
+        var response = await medicalProviderAPIService.MedicalSpecializationsAsync();
+        logger.LogInformation("Conducted provider search with response: {response}", response);
+        return response;
     }
 }
