@@ -16,3 +16,5 @@ This project is to demonstrate the Natural Language Understanding (NLU), Natural
 - Prompt filters.
 - Semantic Kernel.
 - Plugins
+
+For more information please review this [journal]([url](https://iaeme.com/Home/article_id/IJAIRD_03_01_011))
