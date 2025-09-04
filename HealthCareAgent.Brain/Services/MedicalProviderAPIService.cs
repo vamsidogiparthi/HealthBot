@@ -63,7 +63,7 @@ public class MedicalProviderAPIService(
     public async Task<string> SearchProvidersAsync(string zipcode, string? specializations = "")
     {
         var client = _httpClientFactory.CreateClient();
-        var requestUrl = $"{_options.BaseUrl}/{_options.DistributionId}";
+        var requestUrl = $"{_options.BaseUrl}{_options.DistributionId}";
         var data = new ConditionGroup()
         {
             Conditions =

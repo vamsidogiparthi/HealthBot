@@ -31,7 +31,9 @@ public class Brain(
 
         var chatHistory = await chatHistoryDataService.GetChatHistoryByUser(userConnectionId);
 
-        chatHistory.ChatHistory.AddUserMessage(userMessage);
+        chatHistory.History.Messages.Add(
+            new DataLayer.DatabaseModels.HistoryMessage(AuthorRole.User, userMessage)
+        );
 
         var template = """
             <message role="system">
@@ -61,7 +63,7 @@ public class Brain(
         var summary = await _kernel.InvokeAsync(
             "ConversationSummaryPlugin",
             "SummarizeConversation",
-            new() { { "input", chatHistory.ChatHistory.ToString() } }
+            new() { { "input", chatHistory.History.ToString() } }
         );
         var arguments = new KernelArguments()
         {
@@ -71,17 +73,21 @@ public class Brain(
         // Render the prompt
         var promptTemplate = templateFactory.Create(promptTemplateConfig);
         var renderedPrompt = await promptTemplate.RenderAsync(_kernel, arguments);
-        chatHistory.ChatHistory.AddSystemMessage(renderedPrompt);
+        chatHistory.History.Messages.Add(
+            new DataLayer.DatabaseModels.HistoryMessage(AuthorRole.System, renderedPrompt)
+        );
 
         var chatMessage = await chatCompletionService.GetChatMessageContentAsync(
-            chatHistory.ChatHistory,
+            chatHistory.History.ChatHistory,
             openAIPromptExecutionSettings,
             kernel: _kernel
         );
         logger.LogInformation("Response > {chatMessage}", chatMessage);
-        chatHistory.ChatHistory.AddAssistantMessage(chatMessage.Content ?? string.Empty);
+        chatHistory.History.Messages.Add(
+            new(AuthorRole.Assistant, chatMessage.Content ?? string.Empty)
+        );
 
-        //await chatHistoryDataService.SaveChatHistory(userConnectionId, chatHistory.ChatHistory);
+        await chatHistoryDataService.SaveChatHistory(userConnectionId, chatHistory.History);
 
         return chatMessage.Content ?? string.Empty;
     }

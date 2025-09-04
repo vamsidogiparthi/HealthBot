@@ -6,7 +6,7 @@ public interface IChatHistoryDataService
 {
     public Task<UserChatHistory> GetChatHistoryByUser(string userConnectionId);
 
-    public Task SaveChatHistory(string userConnectionId, ChatHistory chatHistorySummary);
+    public Task SaveChatHistory(string userConnectionId, History chatHistorySummary);
 }
 
 public class ChatHistoryDataService : IChatHistoryDataService
@@ -35,20 +35,29 @@ public class ChatHistoryDataService : IChatHistoryDataService
             up => up.UserChatConnectId,
             userConnectionId
         );
-        return await _userChatHistory.Find(filter).FirstOrDefaultAsync() ?? new();
+        var result = await _userChatHistory.Find(filter).FirstOrDefaultAsync();
+        return result ?? new(userConnectionId);
     }
 
-    public async Task SaveChatHistory(string userConnectionId, ChatHistory chatHistory)
+    public async Task SaveChatHistory(string userConnectionId, History chatHistory)
     {
         _logger.LogInformation("Saving User Chat History");
         ArgumentNullException.ThrowIfNull(userConnectionId);
         ArgumentNullException.ThrowIfNull(chatHistory);
 
-        var userChatHistory =
-            await GetChatHistoryByUser(userConnectionId)
-            ?? new UserChatHistory() { UserChatConnectId = userConnectionId };
-        userChatHistory.ChatHistory = chatHistory;
+        var filter = Builders<UserChatHistory>.Filter.Eq(
+            up => up.UserChatConnectId,
+            userConnectionId
+        );
 
-        await _userChatHistory.InsertOneAsync(userChatHistory);
+        var userChatHistory = await _userChatHistory.Find(filter).FirstOrDefaultAsync();
+
+        if (userChatHistory is null)
+            await _userChatHistory.InsertOneAsync(new(userConnectionId) { History = chatHistory });
+        else
+        {
+            userChatHistory.History = chatHistory;
+            await _userChatHistory.ReplaceOneAsync(filter, userChatHistory);
+        }
     }
 }
